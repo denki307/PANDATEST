@@ -1,0 +1,62 @@
+{
+  "name": "VC Music & Video Bot",
+  "description": "Telegram Voice Chat Music and Video Bot using Pyrogram and PyTgCalls.",
+  "repository": "https://github.com/yourusername/yourrepo",
+  "logo": "https://telegra.ph/file/your-image-link.jpg",
+  "keywords": [
+    "telegram",
+    "musicbot",
+    "videobot",
+    "pyrogram",
+    "pytgcalls"
+  ],
+  "env": {
+    "API_ID": {
+      "description": "Get this from my.telegram.org",
+      "value": ""
+    },
+    "API_HASH": {
+      "description": "Get this from my.telegram.org",
+      "value": ""
+    },
+    "STRING_SESSION": {
+      "description": "Your Pyrogram String Session",
+      "value": ""
+    },
+    "OWNER_ID": {
+      "description": "Your Telegram User ID",
+      "value": ""
+    },
+    "OWNER_USERNAME": {
+      "description": "Your Telegram Username without @",
+      "value": "YourName"
+    },
+    "LOGGER_GROUP": {
+      "description": "Your Logger Group ID (starts with -100)",
+      "value": ""
+    },
+    "YOUTUBE_API_KEY": {
+      "description": "YouTube Data API v3 Key from Google Cloud Console",
+      "value": ""
+    },
+    "START_IMG": {
+      "description": "Direct link to your bot's start image",
+      "value": "https://telegra.ph/file/your-image.jpg"
+    }
+  },
+  "buildpacks": [
+    {
+      "url": "heroku/python"
+    },
+    {
+      "url": "https://github.com/jonathanong/heroku-buildpack-ffmpeg-get.git"
+    }
+  ],
+  "formation": {
+    "worker": {
+      "quantity": 1,
+      "size": "basic"
+    }
+  }
+}
+
