@@ -8,10 +8,11 @@ from pytgcalls import PyTgCalls
 from pytgcalls.types import AudioPiped, AudioVideoPiped
 from yt_dlp import YoutubeDL
 
-# Config file-la irunthu details
+# Config file-la irunthu details import pannikurom
 from config import (
     API_ID, 
     API_HASH, 
+    BOT_TOKEN,
     STRING_SESSION, 
     OWNER_ID, 
     OWNER_USERNAME, 
@@ -19,23 +20,25 @@ from config import (
     CHANNEL_LINK, 
     START_IMG,
     LOGGER_GROUP,
-    YOUTUBE_API_KEY # Kandippa config.py-la add panniru macha
+    YOUTUBE_API_KEY
 )
 
 # --- LOGGING SETUP ---
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s - %(levelname)s - %(message)s",
-    handlers=[
-        logging.FileHandler("bot_logs.txt"),
-        logging.StreamHandler()
-    ]
+    handlers=[logging.FileHandler("bot_logs.txt"), logging.StreamHandler()]
 )
 logger = logging.getLogger(__name__)
 
-# Userbot Client Setup
-app = Client("VCBot", api_id=API_ID, api_hash=API_HASH, session_string=STRING_SESSION)
-call_py = PyTgCalls(app)
+# --- CLIENTS SETUP ---
+# 1. Bot Client: Commands handle panna (Token use pannum)
+bot = Client("MusicBot", api_id=API_ID, api_hash=API_HASH, bot_token=BOT_TOKEN)
+
+# 2. Userbot Client: VC-la join panni stream panna (Session use pannum)
+user = Client("Userbot", api_id=API_ID, api_hash=API_HASH, session_string=STRING_SESSION)
+
+call_py = PyTgCalls(user)
 
 # --- YOUTUBE API SEARCH FUNCTION ---
 def youtube_search(query):
@@ -66,16 +69,16 @@ START_BUTTONS = InlineKeyboardMarkup(
     ]
 )
 
-# --- COMMANDS ---
+# --- COMMANDS (Bot Client-la handle aagum) ---
 
-@app.on_message(filters.command("start") & filters.private)
+@bot.on_message(filters.command("start") & filters.private)
 async def start_cmd(client, message):
     await message.reply_photo(
         photo=START_IMG,
         caption=(
-            "🔥 **Vanakkam Macha! YouTube API Enabled.**\n\n"
-            "🎵 **/play** - Audio Only Search\n"
-            "🎥 **/vplay** - Video + Audio Search\n"
+            "🔥 **Vanakkam Macha! Dual-Client Bot Live.**\n\n"
+            "🎵 **/play** - Audio Only (YouTube API)\n"
+            "🎥 **/vplay** - Video + Audio (YouTube API)\n"
             "🛑 **/vstop** - Stop & Leave VC\n"
             "⏸ **/vpause** - Pause | ▶️ **/vresume** - Resume\n"
             "🛡 **/sudolist** - Owner info\n"
@@ -84,14 +87,14 @@ async def start_cmd(client, message):
         reply_markup=START_BUTTONS
     )
 
-@app.on_message(filters.command("sudolist"))
+@bot.on_message(filters.command("sudolist"))
 async def sudo_list(client, message):
     await message.reply_text(
         f"🛡 **Sudo/Owner List**\n\n🆔 **Owner ID:** `{OWNER_ID}`\n👤 **Username:** {OWNER_USERNAME}",
         reply_markup=START_BUTTONS
     )
 
-@app.on_message(filters.command("logs") & filters.user(OWNER_ID))
+@bot.on_message(filters.command("logs") & filters.user(OWNER_ID))
 async def get_logs(client, message):
     if os.path.exists("bot_logs.txt"):
         await message.reply_document(document="bot_logs.txt", caption="📄 Bot Error Logs")
@@ -99,7 +102,7 @@ async def get_logs(client, message):
         await message.reply_text("❌ Logs file ready-ah illa.")
 
 # --- AUDIO PLAY (/play) ---
-@app.on_message(filters.command("play") & filters.group)
+@bot.on_message(filters.command("play") & filters.group)
 async def play_audio(client, message):
     if len(message.command) < 2:
         return await message.reply("Enna song venum macha?")
@@ -122,11 +125,11 @@ async def play_audio(client, message):
         await call_py.join_group_call(message.chat.id, AudioPiped(url))
     except Exception as e:
         logger.error(f"Play Error: {e}")
-        await client.send_message(LOGGER_GROUP, f"❌ **Play Error:**\n`{e}`")
+        await bot.send_message(LOGGER_GROUP, f"❌ **Play Error:**\n`{e}`")
         await m.edit("❌ Streaming-la error! Logs check pannu.")
 
 # --- VIDEO PLAY (/vplay) ---
-@app.on_message(filters.command("vplay") & filters.group)
+@bot.on_message(filters.command("vplay") & filters.group)
 async def play_video(client, message):
     if len(message.command) < 2:
         return await message.reply("Enna video venum macha?")
@@ -149,11 +152,11 @@ async def play_video(client, message):
         await call_py.join_group_call(message.chat.id, AudioVideoPiped(url))
     except Exception as e:
         logger.error(f"VPlay Error: {e}")
-        await client.send_message(LOGGER_GROUP, f"❌ **VPlay Error:**\n`{e}`")
+        await bot.send_message(LOGGER_GROUP, f"❌ **VPlay Error:**\n`{e}`")
         await m.edit("❌ Video Streaming-la error!")
 
 # --- CONTROLS ---
-@app.on_message(filters.command(["vstop", "stop"]) & filters.group)
+@bot.on_message(filters.command(["vstop", "stop"]) & filters.group)
 async def vstop_command(client, message):
     try:
         await call_py.leave_group_call(message.chat.id)
@@ -161,7 +164,7 @@ async def vstop_command(client, message):
     except:
         pass
 
-@app.on_message(filters.command(["vpause", "pause"]) & filters.group)
+@bot.on_message(filters.command(["vpause", "pause"]) & filters.group)
 async def vpause_command(client, message):
     try:
         await call_py.pause_stream(message.chat.id)
@@ -169,7 +172,7 @@ async def vpause_command(client, message):
     except:
         pass
 
-@app.on_message(filters.command(["vresume", "resume"]) & filters.group)
+@bot.on_message(filters.command(["vresume", "resume"]) & filters.group)
 async def vresume_command(client, message):
     try:
         await call_py.resume_stream(message.chat.id)
@@ -179,11 +182,13 @@ async def vresume_command(client, message):
 
 # --- STARTUP ---
 async def start_bot():
-    await app.start()
+    await bot.start()
+    await user.start()
     await call_py.start()
-    print("✅ Bot is Live with YouTube API & Logger!")
+    print("✅ Bot & Userbot are Live with YouTube API!")
     await asyncio.Event().wait()
 
 if __name__ == "__main__":
-    asyncio.get_event_loop().run_until_complete(start_bot())
+    loop = asyncio.get_event_loop()
+    loop.run_until_complete(start_bot())
 
