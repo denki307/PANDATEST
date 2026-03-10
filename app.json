@@ -51,10 +51,10 @@
   },
   "buildpacks": [
     {
-      "url": "heroku/python"
+      "url": "https://github.com/jonathanong/heroku-buildpack-ffmpeg-get.git"
     },
     {
-      "url": "https://github.com/jonathanong/heroku-buildpack-ffmpeg-get.git"
+      "url": "heroku/python"
     }
   ],
   "formation": {
