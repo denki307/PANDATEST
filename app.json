@@ -1,6 +1,6 @@
 {
-  "name": "VC Music & Video Bot",
-  "description": "Telegram Voice Chat Music and Video Bot using Pyrogram and PyTgCalls.",
+  "name": "Dual-Client VC Bot",
+  "description": "Telegram Voice Chat Music and Video Bot with YouTube API Support.",
   "repository": "https://github.com/yourusername/yourrepo",
   "logo": "https://telegra.ph/file/your-image-link.jpg",
   "keywords": [
@@ -8,23 +8,28 @@
     "musicbot",
     "videobot",
     "pyrogram",
-    "pytgcalls"
+    "pytgcalls",
+    "youtube-api"
   ],
   "env": {
     "API_ID": {
-      "description": "Get this from my.telegram.org",
+      "description": "Get this from https://my.telegram.org",
       "value": ""
     },
     "API_HASH": {
-      "description": "Get this from my.telegram.org",
+      "description": "Get this from https://my.telegram.org",
+      "value": ""
+    },
+    "BOT_TOKEN": {
+      "description": "Your Bot Token from @BotFather",
       "value": ""
     },
     "STRING_SESSION": {
-      "description": "Your Pyrogram String Session",
+      "description": "Your Pyrogram v2 String Session",
       "value": ""
     },
     "OWNER_ID": {
-      "description": "Your Telegram User ID",
+      "description": "Your numeric Telegram User ID",
       "value": ""
     },
     "OWNER_USERNAME": {
@@ -59,4 +64,3 @@
     }
   }
 }
-
