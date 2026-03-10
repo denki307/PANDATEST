@@ -2,5 +2,5 @@ pyrogram
 tgcrypto
 pytgcalls
 yt-dlp
+requests
 asyncio
-
